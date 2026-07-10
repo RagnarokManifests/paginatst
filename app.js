@@ -1,5 +1,4 @@
-const GITHUB_API        = 'https://api.github.com/repos/RagnarokManifests/games/releases';
-const GITHUB_API_LATEST = 'https://api.github.com/repos/RagnarokManifests/games/releases/latest';
+const RELEASES_JSON_URL = 'releases.json';
 const EXE_REGEX  = /\.exe$/i;
 
 const i18n = {
@@ -275,16 +274,12 @@ function formatDate(iso) {
         const desc = document.getElementById('download-desc-windows');
         if (desc) desc.textContent = 'Obteniendo enlace...';
         try {
-          const res = await fetch(GITHUB_API_LATEST, { headers: { Accept: 'application/vnd.github+json' } });
+          const res = await fetch(RELEASES_JSON_URL, { cache: 'no-store' });
           if (!res.ok) throw new Error();
-          const latest = await res.json();
-          const asset = latest.assets?.find(a => EXE_REGEX.test(a.name));
-          if (asset) {
-            winLink.href = asset.browser_download_url;
-            winLink.setAttribute('download', asset.name);
-            if (desc) desc.textContent = `v${latest.tag_name} | ${formatBytes(asset.size)}`;
-            winLink.click(); // disparar la descarga ahora
-          }
+          const valid = await res.json();
+          if (!Array.isArray(valid) || !valid.length) throw new Error();
+          applyReleaseData(valid);
+          winLink.click(); // disparar la descarga ahora
         } catch {
           if (desc) desc.textContent = 'Error. Reintenta.';
         }
@@ -323,85 +318,17 @@ function animateCount(el, target) {
   }, 16);
 }
 
-const CACHE_KEY     = 'ragnarok_releases';
-const CACHE_VERSION = 'v3'; // Cambiar esto limpia el caché viejo
-const CACHE_TTL     = 5 * 60 * 1000; // 5 minutos en ms
-
-// Limpiar caché vieja si la versión no coincide
-try {
-  const cached = localStorage.getItem(CACHE_KEY);
-  if (cached) {
-    const parsed = JSON.parse(cached);
-    if (parsed.version !== CACHE_VERSION) {
-      localStorage.removeItem(CACHE_KEY);
-    }
-  }
-} catch (e) { localStorage.removeItem(CACHE_KEY); }
-
 async function loadReleases() {
-  // Intentar usar caché del localStorage primero
   try {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-      const { timestamp, data } = JSON.parse(cached);
-      if (Date.now() - timestamp < CACHE_TTL) {
-        applyReleaseData(data);
-        return;
-      }
-    }
-  } catch (e) { /* ignorar errores de caché */ }
+    const res = await fetch(RELEASES_JSON_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
 
-  // Llamar a la API si no hay caché válida
-  try {
-    // Obtener en paralelo para mayor velocidad
-    const [resLatest, resAll] = await Promise.all([
-      fetch(GITHUB_API_LATEST, { headers: { Accept: 'application/vnd.github+json' } }),
-      fetch(GITHUB_API + '?per_page=100', { headers: { Accept: 'application/vnd.github+json' } })
-    ]);
-
-    if (!resLatest.ok) throw new Error('HTTP ' + resLatest.status);
-    if (!resAll.ok) throw new Error('HTTP ' + resAll.status);
-
-    const latestRelease = await resLatest.json();
-    const allReleases = await resAll.json();
-
-    const valid = allReleases.filter(r =>
-      r.assets?.some(a => EXE_REGEX.test(a.name))
-    );
-
-    // Asegurar que el último release esté al frente del array
-    const latestInList = valid.findIndex(r => r.id === latestRelease.id);
-    if (latestInList > 0) {
-      valid.splice(latestInList, 1);
-      valid.unshift(latestRelease);
-    } else if (latestInList === -1 && latestRelease.assets?.some(a => EXE_REGEX.test(a.name))) {
-      valid.unshift(latestRelease);
-    }
-
-    if (!valid.length) throw new Error('Sin releases con .exe');
-
-    // Guardar en caché
-    try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({
-        version: CACHE_VERSION,
-        timestamp: Date.now(),
-        data: valid
-      }));
-    } catch (e) { /* ignorar errores de almacenamiento */ }
+    const valid = await res.json();
+    if (!Array.isArray(valid) || !valid.length) throw new Error('Sin releases con .exe');
 
     applyReleaseData(valid);
-
   } catch (err) {
     console.error(err);
-    // Intentar usar caché aunque esté expirada antes de usar fallback
-    try {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const { data } = JSON.parse(cached);
-        applyReleaseData(data);
-        return;
-      }
-    } catch (e) { /* ignorar */ }
     fallback();
   }
 }
@@ -432,7 +359,7 @@ function renderCard(latest) {
   if (link) {
     link.href = asset.browser_download_url;
     link.setAttribute('download', asset.name);
-    document.getElementById('download-desc-windows').textContent = `v${latestVersionTag} | ${formatBytes(asset.size)}`;
+    document.getElementById('download-desc-windows').textContent = `${latestVersionTag} | ${formatBytes(asset.size)}`;
   }
 }
 
@@ -446,43 +373,8 @@ function renderStats(releases) {
   animateCount(document.getElementById('stat-releases'), releases.length);
 }
 
-async function fallback() {
-  // Intentar obtener al menos el último release directamente
-  try {
-    const res = await fetch(GITHUB_API_LATEST, {
-      headers: { Accept: 'application/vnd.github+json' }
-    });
-    if (res.ok) {
-      const latest = await res.json();
-      if (latest && latest.tag_name) {
-        latestVersionTag = latest.tag_name;
-        const asset = latest.assets?.find(a => EXE_REGEX.test(a.name));
-
-        const textEl = document.getElementById('hero-badge-text');
-        const badgeContainer = textEl?.closest('.version-badge');
-        if (textEl && badgeContainer) {
-          textEl.textContent = i18n[currentLang].hero_badge + ' ' + latestVersionTag;
-          badgeContainer.classList.add('visible');
-        }
-
-        if (asset) {
-          const link = document.getElementById('download-link-windows');
-          if (link) {
-            link.href = asset.browser_download_url;
-            link.setAttribute('download', asset.name);
-            const desc = document.getElementById('download-desc-windows');
-            if (desc) desc.textContent = `${latestVersionTag} | ${formatBytes(asset.size)}`;
-          }
-        }
-
-        const sv = document.getElementById('stat-version');
-        if (sv) sv.textContent = latestVersionTag;
-        return;
-      }
-    }
-  } catch (e) { /* ignorar */ }
-
-  // Último recurso: dejar el link en # para que el interceptor lo maneje al clic
+function fallback() {
+  // Dejar el link en # para que el interceptor de clic reintente al vuelo
   const link = document.getElementById('download-link-windows');
   if (link) {
     link.href = '#';
