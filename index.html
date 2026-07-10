@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ragnarok Launcher — Oficial</title>
+  <meta name="description" content="Ragnarok Launcher: tu acceso directo al mundo del gaming en Steam. Descarga ahora." />
+  <link rel="icon" type="image/png" href="fotos de la pagina/icon.png" />
+  <link rel="shortcut icon" href="fotos de la pagina/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=5.0" />
+</head>
+<body>
+
+  <canvas id="particles-canvas"></canvas>
+
+  <div id="cursor-spotlight"></div>
+
+  <div class="plasma-bg"></div>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <img src="fotos de la pagina/icon.png" alt="Ragnarok" class="nav-logo-img" onerror="this.style.display='none'" />
+        <span class="logo-text">RAGNAROK</span>
+      </div>
+      <div class="nav-actions">
+        <a href="https://ko-fi.com/sheaker" target="_blank" class="nav-kofi" title="Donar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="display: block;">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </a>
+        <a href="https://discord.gg/3psQuhwPFp" target="_blank" class="nav-discord" title="Únete a nuestro Discord">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24" style="display: block;">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.873-.894.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.195.373.289a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.076.076 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/>
+          </svg>
+        </a>
+        <button id="lang-toggle" class="lang-toggle" title="Cambiar idioma / Change language">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span id="lang-text">EN</span>
+        </button>
+        <a href="#hero" class="nav-cta" id="nav-download" data-i18n="nav_download">Descargar</a>
+      </div>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <img src="fotos de la pagina/bg.png" alt="" class="hero-bg-img" fetchpriority="high" decoding="async" />
+    <div class="hero-vignette"></div>
+    <div class="hero-wormhole"></div>
+
+    <div class="hero-content">
+
+      <div class="hero-logo-wrap" id="hero-logo-wrap">
+        <div class="hero-logo-ring"></div>
+        <img src="fotos de la pagina/icon.png" alt="Ragnarok Logo" class="hero-logo-img" onerror="this.style.display='none'" />
+      </div>
+
+      <p class="hero-subtitle" id="hero-subtitle" data-i18n="hero_subtitle">
+        Tu acceso directo al mundo del gaming en Steam.<br>
+        Lanza, gestiona y actualiza tus juegos con un solo clic.
+      </p>
+
+      <div class="download-container">
+        <div class="version-badge">
+          <span class="badge-dot"></span>
+          <span id="hero-badge-text" data-i18n="hero_loading">Cargando...</span>
+        </div>
+        <button class="btn-download">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <div class="btn-download-text">
+            <span class="btn-title" data-i18n="btn_install">Instalar</span>
+          </div>
+        </button>
+        <div id="download-panel" class="download-panel">
+          <a id="download-link-windows" href="#" class="download-option active" download>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.3 10.56l8.24 1.2.95 8.95L21.7 2.3 2.3 10.56zM11.5 11.5L2.3 2.3"/></svg>
+            <div class="download-option-text">
+              <span class="download-option-title">Windows</span>
+              <span class="download-option-desc" id="download-desc-windows">x64 | Descarga directa</span>
+            </div>
+          </a>
+          <div id="download-link-linux" class="download-option">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19.21 12.43a2.18 2.18 0 0 0-2.33-2.33L12 12l-4.88-2.1a2.18 2.18 0 0 0-2.33 2.33L7 17.12l-2.45 2.45a2.18 2.18 0 0 0 3.08 3.08L10 20.2l4.69 2.1a2.18 2.18 0 0 0 2.33-2.33L14.88 12l4.33-1.88a2.18 2.18 0 0 0-2.33-2.33L12 12l2.88-1.25a2.18 2.18 0 0 0 2.33-2.33L14.88 4l2.45-2.45a2.18 2.18 0 0 0-3.08-3.08L12 1.88 7.31.23a2.18 2.18 0 0 0-2.33 2.33L7 7.12 2.67 9a2.18 2.18 0 0 0 2.33 2.33L12 12l-2.88 1.25a2.18 2.18 0 0 0-2.33 2.33L7 20.12l-2.45 2.45a2.18 2.18 0 0 0 3.08 3.08L12 23.25l4.69-1.65a2.18 2.18 0 0 0 2.33-2.33L14.88 12Z"/>
+            </svg>
+            <div class="download-option-text">
+              <span class="download-option-title">Linux</span>
+              <span class="download-option-desc" data-i18n="linux_dev">En desarrollo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value" id="stat-downloads">—</span>
+          <span class="stat-label" data-i18n="stat_downloads">Descargas</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" id="stat-version">—</span>
+          <span class="stat-label" data-i18n="stat_version">Versión</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" id="stat-releases">—</span>
+          <span class="stat-label" data-i18n="stat_releases">Releases</span>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="interactive-section">
+    <div class="container">
+      <div class="interactive-layout">
+        <div class="gallery-column">
+          <div class="gallery-header">
+            <span class="section-tag" data-i18n="gallery_tag">Interfaz</span>
+            <h2 class="gallery-title" data-i18n="gallery_title">Explora el Launcher</h2>
+            <p class="gallery-desc" data-i18n="gallery_desc">Echa un vistazo a la interfaz limpia, rápida y configurable de Ragnarok Launcher.</p>
+          </div>
+
+          <div class="gallery-wrap">
+            <div class="gallery-main" onclick="window.openLightbox()">
+              <img id="gallery-active-img" src="fotos de la pagina/screenshot_home.png" alt="Ragnarok Launcher Home" />
+              <div class="gallery-caption" id="gallery-active-caption" data-i18n="cap_home">Panel de Control: Estado del servicio y estadísticas del launcher</div>
+            </div>
+
+            <div class="gallery-thumbs">
+              <div class="thumb active" onclick="setGalleryImage('screenshot_home.png', 'cap_home', this)">
+                <img src="fotos de la pagina/screenshot_home.png" alt="Home" />
+              </div>
+              <div class="thumb" onclick="setGalleryImage('screenshot_library.png', 'cap_library', this)">
+                <img src="fotos de la pagina/screenshot_library.png" alt="Library" />
+              </div>
+              <div class="thumb" onclick="setGalleryImage('screenshot_online.png', 'cap_online', this)">
+                <img src="fotos de la pagina/screenshot_online.png" alt="Multiplayer" />
+              </div>
+              <div class="thumb" onclick="setGalleryImage('screenshot_settings.png', 'cap_settings', this)">
+                <img src="fotos de la pagina/screenshot_settings.png" alt="Settings" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card draggable" style="--x: -150px; --y: 10%;">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3 data-i18n="feat1_title">Lanzamiento Rápido</h3>
+          <p data-i18n="feat1_desc">Inicia tus juegos de Steam directamente sin pasos extra.</p>
+        </div>
+        <div class="feature-card draggable" style="--x: -120px; --y: 65%;">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6"/><path d="M2 11.5a10 10 0 0 1 18.8-4.3L22 2.5"/><path d="M22 12.5a10 10 0 0 1-18.8 4.3L2 21.5"/></svg>
+          </div>
+          <h3 data-i18n="feat2_title">Actualizaciones Automáticas</h3>
+          <p data-i18n="feat2_desc">El launcher se actualiza solo. Siempre tendrás la última versión.</p>
+        </div>
+        <div class="feature-card draggable" style="--x: calc(100% - 150px); --y: 40%;">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 data-i18n="feat3_title">Seguro y Ligero</h3>
+          <p data-i18n="feat3_desc">Sin bloatware, sin anuncios. Solo lo que necesitas para jugar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="fotos de la pagina/icon.png" alt="Ragnarok" class="footer-logo-img" onerror="this.style.display='none'" />
+        <span class="footer-name">RAGNAROK</span>
+      </div>
+      <div class="footer-socials">
+        <a href="https://ko-fi.com/sheaker" target="_blank" class="nav-kofi" title="Apoya el proyecto">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </a>
+        <a href="https://discord.gg/3psQuhwPFp" target="_blank" class="nav-discord" title="Únete a nuestro Discord">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.873-.894.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.195.373.289a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.076.076 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/>
+          </svg>
+        </a>
+      </div>
+      <p class="footer-copy" data-i18n="footer_copy">© 2026 Ragnarok Launcher. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <div id="lightbox" class="lightbox-overlay" onclick="window.closeLightbox()">
+    <span class="lightbox-close" onclick="window.closeLightbox()">&times;</span>
+    <span class="lightbox-arrow lightbox-prev" onclick="window.navigateLightbox(-1, event)">&#10094;</span>
+    <img class="lightbox-content" id="lightbox-img" alt="Fullscreen View" onclick="event.stopPropagation()" />
+    <span class="lightbox-arrow lightbox-next" onclick="window.navigateLightbox(1, event)">&#10095;</span>
+  </div>
+
+  <script src="app.js?v=5.0"></script>
+</body>
+</html>
