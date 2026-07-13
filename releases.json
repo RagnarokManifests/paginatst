@@ -74,9 +74,9 @@
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.0.0/ragnarok-launcher_2.0.0_x64-setup.exe"
       },
       {
-        "name": "ragnarok-launcher_2.0.0_x64-setup.zip",
+        "name": "launcher_2.0.0_x64-setup.zip",
         "size": 4486463,
-        "browser_download_url": "https://github.com/RagnarokManifests/paginatst/releases/download/zip-v2.0.0/ragnarok-launcher_2.0.0_x64-setup.zip"
+        "browser_download_url": "https://github.com/RagnarokManifests/paginatst/releases/download/zip-v2.0.0/launcher_2.0.0_x64-setup.zip"
       }
     ],
     "tarball_url": "https://api.github.com/repos/RagnarokManifests/games/tarball/v2.0.0",
