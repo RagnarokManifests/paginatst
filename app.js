@@ -1,5 +1,6 @@
 const RELEASES_JSON_URL = 'releases.json';
 const EXE_REGEX  = /\.exe$/i;
+const ZIP_REGEX  = /\.zip$/i;
 
 const i18n = {
   es: {
@@ -350,7 +351,7 @@ function renderHero() {
 }
 
 function renderCard(latest) {
-  const asset = latest.assets.find(a => EXE_REGEX.test(a.name));
+  const asset = latest.assets.find(a => ZIP_REGEX.test(a.name)) || latest.assets.find(a => EXE_REGEX.test(a.name));
   if (!asset) return;
 
   const setId = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
