@@ -25,7 +25,10 @@ if (!exeAsset) {
 }
 
 const mirrorTag = `zip-${latest.tag_name}`;
-const zipName = exeAsset.name.replace(EXE_REGEX, '.zip');
+// Sin el prefijo "ragnarok-": los gestores de descarga (FDM, IDM, etc.) leen el nombre
+// del header Content-Disposition que manda GitHub, no del atributo download del HTML,
+// así que el nombre final tiene que quedar bien desde el propio asset subido acá.
+const zipName = exeAsset.name.replace(EXE_REGEX, '.zip').replace(/^ragnarok-/i, '');
 
 // ¿Ya espejamos esta versión antes? Si sí, reutilizamos el release/asset existente.
 let uploadUrl = null;
@@ -43,7 +46,11 @@ if (existing.ok) {
     writeFileSync('releases.json', JSON.stringify(releases, null, 2) + '\n');
     process.exit(0);
   }
-  // El release espejo existe pero sin el asset (ej. una corrida anterior falló al subirlo): reutilizarlo.
+  // Borrar assets .zip viejos (ej. con el nombre "ragnarok-..." de una corrida anterior).
+  for (const oldAsset of rel.assets?.filter((a) => a.name.endsWith('.zip')) ?? []) {
+    await api(`https://api.github.com/repos/${OWN_REPO}/releases/assets/${oldAsset.id}`, { method: 'DELETE' });
+  }
+  // El release espejo existe pero sin el asset actual: reutilizarlo.
   uploadUrl = rel.upload_url.replace('{?name,label}', `?name=${encodeURIComponent(zipName)}`);
 }
 
