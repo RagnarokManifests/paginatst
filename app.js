@@ -359,7 +359,7 @@ function renderCard(latest) {
   const link = document.getElementById('download-link-windows');
   if (link) {
     link.href = asset.browser_download_url;
-    link.setAttribute('download', asset.name);
+    link.setAttribute('download', asset.name.replace(/^ragnarok-/i, ''));
     document.getElementById('download-desc-windows').textContent = `${latestVersionTag} | ${formatBytes(asset.size)}`;
   }
 }
