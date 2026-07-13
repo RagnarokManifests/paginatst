@@ -25,6 +25,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/build-releases-json.mjs
 
+      - name: Espejar el instalador como .zip en este repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/mirror-zip.mjs
+
       - name: Commit si hubo cambios
         run: |
           git config user.name "github-actions[bot]"
