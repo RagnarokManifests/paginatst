@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 5037835,
         "digest": "sha256:c22a4f7bdf53c4370fee035787019031a4c68cf34f689f35b1e5a9b78f271d74",
-        "download_count": 90,
+        "download_count": 92,
         "created_at": "2026-07-15T05:09:40Z",
         "updated_at": "2026-07-15T05:09:46Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.0.2/ragnarok-launcher_2.0.2_x64-setup.exe"
