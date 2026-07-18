@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 5064637,
         "digest": "sha256:33d5fd5e231bd46da15ef0beef624a41d8687cfe22259d5acd43d78d3226d7d9",
-        "download_count": 59,
+        "download_count": 62,
         "created_at": "2026-07-17T19:01:59Z",
         "updated_at": "2026-07-17T19:02:00Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.0.3/ragnarok-launcher_2.0.3_x64-setup.exe"
