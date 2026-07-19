@@ -1,5 +1,89 @@
 [
   {
+    "url": "https://api.github.com/repos/RagnarokManifests/games/releases/356222406",
+    "assets_url": "https://api.github.com/repos/RagnarokManifests/games/releases/356222406/assets",
+    "upload_url": "https://uploads.github.com/repos/RagnarokManifests/games/releases/356222406/assets{?name,label}",
+    "html_url": "https://github.com/RagnarokManifests/games/releases/tag/v2.0.4",
+    "id": 356222406,
+    "author": {
+      "login": "RagnarokManifests",
+      "id": 111479142,
+      "node_id": "U_kgDOBqUJZg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/111479142?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/RagnarokManifests",
+      "html_url": "https://github.com/RagnarokManifests",
+      "followers_url": "https://api.github.com/users/RagnarokManifests/followers",
+      "following_url": "https://api.github.com/users/RagnarokManifests/following{/other_user}",
+      "gists_url": "https://api.github.com/users/RagnarokManifests/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/RagnarokManifests/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/RagnarokManifests/subscriptions",
+      "organizations_url": "https://api.github.com/users/RagnarokManifests/orgs",
+      "repos_url": "https://api.github.com/users/RagnarokManifests/repos",
+      "events_url": "https://api.github.com/users/RagnarokManifests/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/RagnarokManifests/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOOzZiN84VO4XG",
+    "tag_name": "v2.0.4",
+    "target_commitish": "main",
+    "name": "v2.0.4",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2026-07-15T04:19:43Z",
+    "updated_at": "2026-07-19T00:18:25Z",
+    "published_at": "2026-07-19T00:18:25Z",
+    "assets": [
+      {
+        "url": "https://api.github.com/repos/RagnarokManifests/games/releases/assets/481917638",
+        "id": 481917638,
+        "node_id": "RA_kwDOOzZiN84cuXrG",
+        "name": "ragnarok-launcher_2.0.4_x64-setup.exe",
+        "label": null,
+        "uploader": {
+          "login": "RagnarokManifests",
+          "id": 111479142,
+          "node_id": "U_kgDOBqUJZg",
+          "avatar_url": "https://avatars.githubusercontent.com/u/111479142?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/RagnarokManifests",
+          "html_url": "https://github.com/RagnarokManifests",
+          "followers_url": "https://api.github.com/users/RagnarokManifests/followers",
+          "following_url": "https://api.github.com/users/RagnarokManifests/following{/other_user}",
+          "gists_url": "https://api.github.com/users/RagnarokManifests/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/RagnarokManifests/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/RagnarokManifests/subscriptions",
+          "organizations_url": "https://api.github.com/users/RagnarokManifests/orgs",
+          "repos_url": "https://api.github.com/users/RagnarokManifests/repos",
+          "events_url": "https://api.github.com/users/RagnarokManifests/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/RagnarokManifests/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "content_type": "application/x-msdownload",
+        "state": "uploaded",
+        "size": 6834020,
+        "digest": "sha256:c175df1d7888e2484b9f1d3b4a2e375d2b0c6d44e33c0a38bf96f6186bee7e78",
+        "download_count": 0,
+        "created_at": "2026-07-19T00:18:17Z",
+        "updated_at": "2026-07-19T00:18:23Z",
+        "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.0.4/ragnarok-launcher_2.0.4_x64-setup.exe"
+      },
+      {
+        "name": "launcher_2.0.4_x64-setup.zip",
+        "size": 6816021,
+        "browser_download_url": "https://github.com/RagnarokManifests/paginatst/releases/download/zip-v2.0.4/launcher_2.0.4_x64-setup.zip"
+      }
+    ],
+    "tarball_url": "https://api.github.com/repos/RagnarokManifests/games/tarball/v2.0.4",
+    "zipball_url": "https://api.github.com/repos/RagnarokManifests/games/zipball/v2.0.4",
+    "body": ""
+  },
+  {
     "url": "https://api.github.com/repos/RagnarokManifests/games/releases/355869175",
     "assets_url": "https://api.github.com/repos/RagnarokManifests/games/releases/355869175/assets",
     "upload_url": "https://uploads.github.com/repos/RagnarokManifests/games/releases/355869175/assets{?name,label}",
@@ -72,11 +156,6 @@
         "created_at": "2026-07-17T19:01:59Z",
         "updated_at": "2026-07-17T19:02:00Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.0.3/ragnarok-launcher_2.0.3_x64-setup.exe"
-      },
-      {
-        "name": "launcher_2.0.3_x64-setup.zip",
-        "size": 5046367,
-        "browser_download_url": "https://github.com/RagnarokManifests/paginatst/releases/download/zip-v2.0.3/launcher_2.0.3_x64-setup.zip"
       }
     ],
     "tarball_url": "https://api.github.com/repos/RagnarokManifests/games/tarball/v2.0.3",
