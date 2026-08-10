@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 9489970,
         "digest": "sha256:c18e15bdc732228fe4eea11a01b82554c81c5d68c9b306d0d7776281ad7e3d4f",
-        "download_count": 248,
+        "download_count": 249,
         "created_at": "2026-08-04T07:59:59Z",
         "updated_at": "2026-08-04T08:00:11Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.0.9/ragnarok-launcher_2.0.9_x64-setup.exe"
