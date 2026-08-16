@@ -1,9 +1,19 @@
 name: Actualizar releases.json
 
 on:
+  # Disparo instantáneo: el repo RagnarokManifests/games manda un repository_dispatch
+  # apenas publica un release (ver .github/workflows/notify-pagina.yml allá).
+  repository_dispatch:
+    types: [nuevo-release]
+  # Red de seguridad por si el disparo falla. GitHub no acepta menos de 5 min.
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch: {}
+
+# Si ya hay una corrida en curso, la nueva la reemplaza en vez de encolarse.
+concurrency:
+  group: update-releases
+  cancel-in-progress: false
 
 permissions:
   contents: write
