@@ -19,9 +19,11 @@
   --white:       #ffffff;
   --ff-title:    'Cinzel', serif;
   --ff-body:     'Outfit', sans-serif;
+  --gold-deep:   #8a5f13;
   --r:           10px;
   --r-lg:        18px;
   --ease:        cubic-bezier(0.4,0,0.2,1);
+  --section-pad: clamp(80px, 10vw, 140px);
 }
 
 html { scroll-behavior: smooth; }
@@ -41,28 +43,28 @@ body {
 a { color: inherit; text-decoration: none; }
 .container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
 
+/* Antes había 4 capas de fondo animadas compitiendo (plasma + wormhole + spotlight
+   + partículas). Ahora el ambiente es una sola capa quieta y el movimiento vive
+   solo en el hero, que es donde tiene que llamar la atención. */
 #cursor-spotlight {
   position: fixed;
   top: 0; left: 0;
-  width: 400px; height: 400px;
+  width: 460px; height: 460px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(201, 146, 42, 0.08) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(201, 146, 42, 0.07) 0%, transparent 62%);
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 150;
 }
+@media (hover: none) {
+  #cursor-spotlight { display: none; }
+}
 
 .plasma-bg {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: radial-gradient(circle at 10% 20%, var(--accent-dim) 0%, transparent 25%),
-              radial-gradient(circle at 80% 30%, var(--gold-dim) 0%, transparent 20%),
-              radial-gradient(circle at 90% 80%, var(--accent-dim) 0%, transparent 25%);
-  animation: plasma-float 25s ease-in-out infinite alternate;
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(201,146,42,0.10) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 50% at 100% 100%, rgba(201,146,42,0.05) 0%, transparent 55%);
   z-index: -1;
-}
-@keyframes plasma-float {
-  0% { transform: scale(1) rotate(0deg); opacity: 0.7; }
-  100% { transform: scale(1.4) rotate(20deg); opacity: 1; }
 }
 
 #particles-canvas {
@@ -146,42 +148,59 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
 }
 
-.hero-vignette {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, var(--bg2) 0%, transparent 40%);
-  z-index: 3;
-  pointer-events: none;
-}
-
 .hero-bg-img {
   position: absolute; inset: -5%;
   width: 110%; height: 110%;
   object-fit: cover;
-  z-index: -1;
-  animation: heroBgScale 20s linear infinite alternate;
-  opacity: 0.3;
+  z-index: -2;
+  animation: heroBgScale 24s ease-in-out infinite alternate;
+  opacity: 0.45;
   pointer-events: none;
 }
 
 @keyframes heroBgScale {
   0% { transform: scale(1); }
-  100% { transform: scale(1.05); }
+  100% { transform: scale(1.07); }
 }
 
-.hero-wormhole {
-  position: absolute; inset: 0; z-index: 0;
-  background: radial-gradient(ellipse 50% 100% at 50% 0%, rgba(201, 146, 42, 0.15) 0%, transparent 50%);
-  mask-image: radial-gradient(circle at 50% 50%, black 20%, transparent 60%);
-  animation: wormhole-spin 30s linear infinite;
+/* El scrim deja respirar el arte de fondo pero mantiene el texto legible. */
+.hero-scrim {
+  position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(ellipse 75% 60% at 50% 45%, rgba(1,4,9,0.35) 0%, rgba(1,4,9,0.82) 70%, var(--bg) 100%);
+  pointer-events: none;
 }
-@keyframes wormhole-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+
+/* Haz de luz cenital detrás del logo: el golpe de efecto del hero. */
+.hero-beam {
+  position: absolute; inset: 0; z-index: -1;
+  background: conic-gradient(from 180deg at 50% 0%,
+              transparent 0deg,
+              rgba(201,146,42,0.00) 60deg,
+              rgba(240,192,96,0.16) 88deg,
+              rgba(240,192,96,0.28) 90deg,
+              rgba(240,192,96,0.16) 92deg,
+              rgba(201,146,42,0.00) 120deg,
+              transparent 360deg);
+  mask-image: linear-gradient(to bottom, black 0%, rgba(0,0,0,0.5) 45%, transparent 78%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0,0,0,0.5) 45%, transparent 78%);
+  animation: beam-breathe 7s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes beam-breathe {
+  from { opacity: 0.55; transform: scaleX(0.92); }
+  to   { opacity: 1;    transform: scaleX(1.08); }
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--bg2) 0%, rgba(13,17,23,0.6) 12%, transparent 45%);
+  z-index: 3;
+  pointer-events: none;
 }
 
 .hero-content {
-  position: relative; z-index: 2;
+  position: relative; z-index: 4;
   display: flex; flex-direction: column;
   align-items: center; text-align: center;
   padding: 100px 2rem 80px;
@@ -192,7 +211,7 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   width: 140px; height: 140px;
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.4rem;
 }
 .hero-logo-ring {
   position: absolute; inset: -10px;
@@ -227,42 +246,78 @@ a { color: inherit; text-decoration: none; }
 
 .hero-title {
   display: flex; flex-direction: column;
-  align-items: center; gap: 0;
+  align-items: center; gap: 0.35rem;
   font-family: var(--ff-title); line-height: 1;
-  text-transform: uppercase; margin-bottom: 1.2rem;
+  text-transform: uppercase; margin-bottom: 1.6rem;
 }
 .title-main {
-  font-size: clamp(4rem, 10vw, 8rem);
-  font-weight: 900; letter-spacing: 0.12em;
+  font-size: clamp(3.2rem, 11vw, 7.5rem);
+  font-weight: 900; letter-spacing: 0.1em;
   color: var(--white);
-  text-shadow: 0 0 60px rgba(255,255,255,0.08);
+  padding-left: 0.1em; /* compensa el letter-spacing de la última letra */
+  text-shadow: 0 0 12px rgba(255,255,255,0.18),
+               0 0 70px rgba(201,146,42,0.35),
+               0 6px 30px rgba(0,0,0,0.75);
 }
 .title-sub {
-  font-size: clamp(1.1rem, 3vw, 1.7rem);
-  font-weight: 400; letter-spacing: 0.55em;
-  background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold));
+  font-size: clamp(0.95rem, 3vw, 1.6rem);
+  font-weight: 400; letter-spacing: 0.5em;
+  background: linear-gradient(100deg, var(--gold-deep) 0%, var(--gold-lt) 45%, #fff6dd 50%, var(--gold-lt) 55%, var(--gold-deep) 100%);
+  background-size: 250% 100%;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  padding-right: 0.55em;
+  padding-left: 0.5em; /* centra ópticamente pese al tracking */
+  animation: sheen 6s ease-in-out infinite;
+}
+@keyframes sheen {
+  0%, 65%, 100% { background-position: 130% 0; }
+  90%           { background-position: -30% 0; }
 }
 
 .hero-subtitle {
-  font-size: 1.1rem; font-weight: 300; color: var(--muted);
-  max-width: 520px; line-height: 1.75; margin-bottom: 2.5rem;
+  font-size: clamp(1rem, 2.2vw, 1.12rem); font-weight: 300; color: var(--text);
+  opacity: 0.75;
+  max-width: 520px; line-height: 1.75; margin-bottom: 2.75rem;
 }
 
 .btn-download {
+  position: relative; overflow: hidden;
   display: flex; align-items: center; gap: 16px; cursor: pointer;
-  background: var(--accent);
-  border: 1px solid var(--accent-lt);
-  border-radius: 12px; padding: 12px 24px 12px 20px;
+  background: linear-gradient(160deg, var(--gold-lt) 0%, var(--gold) 55%, var(--gold-deep) 100%);
+  border: 1px solid rgba(255, 231, 176, 0.55);
+  border-radius: 14px; padding: 16px 32px 16px 26px;
   font-family: var(--ff-body);
-  color: #fff;
+  color: #2a1c05;
   transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
-  box-shadow: 0 4px 25px rgba(201, 146, 42, 0.3), 0 0 0 4px rgba(201, 146, 42, 0.1);
+  box-shadow: 0 6px 30px rgba(201, 146, 42, 0.35),
+              0 0 0 5px rgba(201, 146, 42, 0.10),
+              inset 0 1px 0 rgba(255,255,255,0.45);
+  animation: cta-pulse 3.5s ease-in-out infinite;
+}
+/* Brillo que cruza el botón para que el ojo caiga siempre acá. */
+.btn-download::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%);
+  transform: translateX(-120%);
+  animation: cta-shine 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes cta-shine {
+  0%, 55%  { transform: translateX(-120%); }
+  80%,100% { transform: translateX(120%); }
+}
+@keyframes cta-pulse {
+  0%,100% { box-shadow: 0 6px 30px rgba(201,146,42,0.35), 0 0 0 5px rgba(201,146,42,0.10), inset 0 1px 0 rgba(255,255,255,0.45); }
+  50%     { box-shadow: 0 8px 42px rgba(240,192,96,0.55), 0 0 0 9px rgba(201,146,42,0.06), inset 0 1px 0 rgba(255,255,255,0.45); }
 }
 .btn-download:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 40px rgba(201, 146, 42, 0.4), 0 0 0 4px rgba(201, 146, 42, 0.1);
+  box-shadow: 0 14px 50px rgba(240, 192, 96, 0.5), 0 0 0 6px rgba(201, 146, 42, 0.14), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+.btn-download:active { transform: translateY(-1px) scale(0.99); }
+.btn-download:focus-visible {
+  outline: 2px solid var(--gold-lt);
+  outline-offset: 4px;
 }
 
 .download-container {
@@ -273,28 +328,29 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 1rem;
 }
 
+/* Antes era una etiqueta rotada 15° pegada al borde del botón; ahora es una
+   píldora centrada arriba, que se lee de una y no tapa nada. */
 .version-badge {
-  position: absolute;
-  top: -10px;
-  right: -25px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: var(--gold);
-  color: var(--bg);
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.07em; text-transform: uppercase;
-  transform: rotate(15deg);
-  z-index: 2;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  gap: 7px;
+  background: rgba(201, 146, 42, 0.12);
+  border: 1px solid rgba(201, 146, 42, 0.45);
+  color: var(--gold-lt);
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-bottom: 1rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  backdrop-filter: blur(10px);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transform: translateY(6px);
+  transition: opacity 0.4s ease, transform 0.4s var(--ease);
 }
 .version-badge.visible {
   opacity: 1;
+  transform: translateY(0);
 }
 .version-badge .badge-dot {
   width: 6px; height: 6px;
@@ -391,11 +447,10 @@ a { color: inherit; text-decoration: none; }
   color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;
   margin-top: 2px;
 }
-.stat-divider { width: 1px; height: 38px; background: var(--border); }
 
 #interactive-section {
   position: relative; z-index: 1;
-  padding: 160px 0;
+  padding: var(--section-pad) 0;
   background: var(--bg2);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -403,7 +458,7 @@ a { color: inherit; text-decoration: none; }
 }
 .interactive-layout {
   position: relative;
-  min-height: 1100px; 
+  min-height: 1100px;
 }
 .gallery-column {
   position: relative;
@@ -411,12 +466,14 @@ a { color: inherit; text-decoration: none; }
   max-width: 850px;
   margin: 0 auto;
 }
+
+/* Tarjetas flotantes y arrastrables sobre la galería. */
 .feature-card {
   position: absolute;
   top: var(--y, 0);
   left: var(--x, 0);
   width: 300px;
-  background: rgba(22, 27, 34, 0.7);
+  background: linear-gradient(180deg, rgba(22,27,34,0.82), rgba(13,17,23,0.82));
   backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--r-lg); padding: 2rem 1.8rem;
@@ -424,7 +481,7 @@ a { color: inherit; text-decoration: none; }
   cursor: move;
   user-select: none;
   animation: float 6s ease-in-out infinite alternate;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
   will-change: transform;
   z-index: 6;
 }
@@ -436,6 +493,11 @@ a { color: inherit; text-decoration: none; }
   to { transform: translate(0, 8px) rotate(1deg); }
 }
 
+.feature-card:hover {
+  border-color: rgba(201,146,42,0.35);
+  box-shadow: 0 20px 55px rgba(0,0,0,0.5), 0 0 40px rgba(201,146,42,0.10);
+}
+
 .feature-card.dragging {
   cursor: -webkit-grabbing; cursor: grabbing;
   animation-play-state: paused;
@@ -445,19 +507,24 @@ a { color: inherit; text-decoration: none; }
 }
 
 .feature-icon {
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
   width: 54px; height: 54px;
-  background: linear-gradient(135deg, var(--accent-dim), var(--gold-dim));
+  background: linear-gradient(135deg, rgba(201,146,42,0.25), rgba(201,146,42,0.08));
+  border: 1px solid rgba(201,146,42,0.25);
   border-radius: var(--r);
   display: flex; align-items: center; justify-content: center;
-  color: var(--accent-lt);
+  color: var(--gold-lt);
+  transition: box-shadow 0.3s var(--ease);
+}
+.feature-card:hover .feature-icon {
+  box-shadow: 0 0 24px rgba(201,146,42,0.35);
 }
 .feature-card h3 {
-  font-family: var(--ff-title); font-size: 0.95rem; font-weight: 700;
+  font-family: var(--ff-title); font-size: 1rem; font-weight: 700;
   color: var(--white); letter-spacing: 0.04em; margin-bottom: 0.5rem;
 }
 .feature-card p {
-  font-size: 0.88rem; color: var(--muted); line-height: 1.65;
+  font-size: 0.9rem; color: var(--muted); line-height: 1.65;
 }
 
 #footer {
@@ -653,10 +720,43 @@ a { color: inherit; text-decoration: none; }
 }
 
 @media (max-width: 680px) {
-  .hero-content { padding-top: 100px; }
-  .hero-stats { gap: 1.5rem; padding: 0.9rem 1.5rem; }
-  .btn-download { width: 90%; justify-content: center; }
+  .container { padding: 0 1.25rem; }
+  /* La barra se desbordaba en pantallas angostas: se aprieta todo un poco. */
+  .nav-inner { padding: 0 1rem; height: 60px; }
+  .nav-actions { gap: 8px; }
+  .nav-logo { font-size: 0.9rem; letter-spacing: 0.12em; gap: 8px; }
+  .nav-logo-img { width: 28px; height: 28px; }
+  .nav-kofi, .nav-discord { padding: 7px; }
+  .lang-toggle { padding: 7px 9px; font-size: 0.75rem; }
+  .nav-cta { padding: 8px 14px; font-size: 0.78rem; }
+  .title-main { font-size: clamp(2.6rem, 10.5vw, 7.5rem); }
+  .hero-content { padding: 96px 1.25rem 64px; }
+  .hero-logo-wrap { width: 108px; height: 108px; }
+  .hero-logo-img { width: 92px; height: 92px; }
+  .title-sub { letter-spacing: 0.34em; padding-left: 0.34em; }
+  .hero-subtitle { margin-bottom: 2rem; }
+  .download-container { width: 100%; }
+  .btn-download { width: 100%; justify-content: center; padding: 16px 20px; }
+  .download-panel { width: 100%; max-width: 340px; }
+  .hero-stats {
+    gap: 1.2rem; padding: 0.9rem 1.2rem; width: 100%;
+    justify-content: space-around;
+  }
+  .stat-value { font-size: 1.25rem; }
+  .gallery-thumbs { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+  .gallery-header { margin-bottom: 2rem; }
 }
-@media (max-width: 420px) {
-  #interactive-section { padding: 60px 0; }
+@media (max-width: 400px) {
+  .nav-logo .logo-text { display: none; }
+}
+
+/* Respeta a quien pide menos movimiento en el sistema. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-bg-img, .hero-beam, .btn-download, .btn-download::after,
+  .hero-logo-img, .hero-logo-ring, .nav-logo-img, .badge-dot, .title-sub,
+  .feature-card {
+    animation: none !important;
+  }
+  .fade-in { opacity: 1; transform: none; transition: none; }
 }

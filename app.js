@@ -1,4 +1,6 @@
 const RELEASES_JSON_URL = 'releases.json';
+// Consulta en vivo a GitHub para no depender de que releases.json ya esté actualizado.
+const LATEST_RELEASE_API_URL = 'https://api.github.com/repos/RagnarokManifests/games/releases/latest';
 const EXE_REGEX  = /\.exe$/i;
 const ZIP_REGEX  = /\.zip$/i;
 
@@ -11,9 +13,7 @@ const i18n = {
     hero_title_main: "RAGNAROK",
     hero_title_sub: "LAUNCHER",
     hero_subtitle: "Tu acceso directo al mundo del gaming en Steam.<br>Lanza, gestiona y actualiza tus juegos con un solo clic.",
-    stat_downloads: "Descargas",
     stat_version: "Versión",
-    stat_releases: "Releases",
     feat1_title: "Lanzamiento Rápido",
     feat1_desc: "Inicia tus juegos de Steam directamente sin pasos extra.",
     feat2_title: "Actualizaciones Automáticas",
@@ -22,7 +22,6 @@ const i18n = {
     feat3_desc: "Sin bloatware, sin anuncios. Solo lo que necesitas para jugar.",
     btn_install: "Instalar",
     dl_tag: "Windows x64",
-    linux_dev: "En desarrollo",
     dl_note: "Al descargar aceptas los términos de uso. Compatible con Windows 10 / 11 (64-bit).",
     footer_copy: "© 2026 Ragnarok Launcher. Todos los derechos reservados.",
     gallery_tag: "Interfaz",
@@ -41,9 +40,7 @@ const i18n = {
     hero_title_main: "RAGNAROK",
     hero_title_sub: "LAUNCHER",
     hero_subtitle: "Your direct access to the world of Steam gaming.<br>Launch, manage, and update your games with a single click.",
-    stat_downloads: "Downloads",
     stat_version: "Version",
-    stat_releases: "Releases",
     feat1_title: "Quick Launch",
     feat1_desc: "Start your Steam games directly without extra steps.",
     feat2_title: "Automatic Updates",
@@ -52,7 +49,6 @@ const i18n = {
     feat3_desc: "No bloatware, no ads. Only what you need to play.",
     btn_install: "Install",
     dl_tag: "Windows x64",
-    linux_dev: "In development",
     dl_note: "By downloading you accept the terms of use. Compatible with Windows 10 / 11 (64-bit).",
     footer_copy: "© 2026 Ragnarok Launcher. All rights reserved.",
     gallery_tag: "Interface",
@@ -308,17 +304,6 @@ document.querySelectorAll('.gallery-column, .feature-card').forEach(el => {
   observer.observe(el);
 });
 
-function animateCount(el, target) {
-  if (!el) return;
-  let start = 0;
-  const inc = target / (1200 / 16);
-  const t = setInterval(() => {
-    start = Math.min(start + inc, target);
-    el.textContent = Math.round(start).toLocaleString('es-ES');
-    if (start >= target) clearInterval(t);
-  }, 16);
-}
-
 async function loadReleases() {
   try {
     const res = await fetch(RELEASES_JSON_URL, { cache: 'no-store' });
@@ -328,9 +313,29 @@ async function loadReleases() {
     if (!Array.isArray(valid) || !valid.length) throw new Error('Sin releases con .exe');
 
     applyReleaseData(valid);
+    checkLiveLatest(valid);
   } catch (err) {
     console.error(err);
     fallback();
+    checkLiveLatest([]);
+  }
+}
+
+// releases.json lo regenera un workflow, así que puede ir unos minutos atrás del
+// release real. Preguntamos a la API de GitHub y, si hay algo más nuevo, lo usamos.
+// Si falla (rate limit, sin red, etc.) se queda lo que ya se mostró.
+async function checkLiveLatest(valid) {
+  try {
+    const res = await fetch(LATEST_RELEASE_API_URL, { cache: 'no-store' });
+    if (!res.ok) return;
+
+    const live = await res.json();
+    if (!live?.tag_name || !live.assets?.some(a => EXE_REGEX.test(a.name))) return;
+    if (valid[0] && live.tag_name === valid[0].tag_name) return;
+
+    applyReleaseData([live, ...valid.filter(r => r.tag_name !== live.tag_name)]);
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -365,13 +370,8 @@ function renderCard(latest) {
 }
 
 function renderStats(releases) {
-  const total = releases.reduce((acc, r) =>
-    acc + r.assets.reduce((s, a) => s + (a.download_count || 0), 0), 0
-  );
-  animateCount(document.getElementById('stat-downloads'), total);
   const sv = document.getElementById('stat-version');
   if (sv) sv.textContent = releases[0].tag_name;
-  animateCount(document.getElementById('stat-releases'), releases.length);
 }
 
 function fallback() {

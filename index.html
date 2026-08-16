@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=5.0" />
+  <link rel="stylesheet" href="style.css?v=6.0" />
 </head>
 <body>
 
@@ -52,8 +52,9 @@
 
   <section id="hero">
     <img src="fotos de la pagina/bg.png" alt="" class="hero-bg-img" fetchpriority="high" decoding="async" />
+    <div class="hero-scrim"></div>
+    <div class="hero-beam"></div>
     <div class="hero-vignette"></div>
-    <div class="hero-wormhole"></div>
 
     <div class="hero-content">
 
@@ -61,6 +62,11 @@
         <div class="hero-logo-ring"></div>
         <img src="fotos de la pagina/icon.png" alt="Ragnarok Logo" class="hero-logo-img" onerror="this.style.display='none'" />
       </div>
+
+      <h1 class="hero-title">
+        <span class="title-main" data-i18n="hero_title_main">RAGNAROK</span>
+        <span class="title-sub" data-i18n="hero_title_sub">LAUNCHER</span>
+      </h1>
 
       <p class="hero-subtitle" id="hero-subtitle" data-i18n="hero_subtitle">
         Tu acceso directo al mundo del gaming en Steam.<br>
@@ -90,32 +96,13 @@
               <span class="download-option-desc" id="download-desc-windows">x64 | Descarga directa</span>
             </div>
           </a>
-          <div id="download-link-linux" class="download-option">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19.21 12.43a2.18 2.18 0 0 0-2.33-2.33L12 12l-4.88-2.1a2.18 2.18 0 0 0-2.33 2.33L7 17.12l-2.45 2.45a2.18 2.18 0 0 0 3.08 3.08L10 20.2l4.69 2.1a2.18 2.18 0 0 0 2.33-2.33L14.88 12l4.33-1.88a2.18 2.18 0 0 0-2.33-2.33L12 12l2.88-1.25a2.18 2.18 0 0 0 2.33-2.33L14.88 4l2.45-2.45a2.18 2.18 0 0 0-3.08-3.08L12 1.88 7.31.23a2.18 2.18 0 0 0-2.33 2.33L7 7.12 2.67 9a2.18 2.18 0 0 0 2.33 2.33L12 12l-2.88 1.25a2.18 2.18 0 0 0-2.33 2.33L7 20.12l-2.45 2.45a2.18 2.18 0 0 0 3.08 3.08L12 23.25l4.69-1.65a2.18 2.18 0 0 0 2.33-2.33L14.88 12Z"/>
-            </svg>
-            <div class="download-option-text">
-              <span class="download-option-title">Linux</span>
-              <span class="download-option-desc" data-i18n="linux_dev">En desarrollo</span>
-            </div>
-          </div>
         </div>
       </div>
 
       <div class="hero-stats">
         <div class="stat">
-          <span class="stat-value" id="stat-downloads">—</span>
-          <span class="stat-label" data-i18n="stat_downloads">Descargas</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
           <span class="stat-value" id="stat-version">—</span>
           <span class="stat-label" data-i18n="stat_version">Versión</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <span class="stat-value" id="stat-releases">—</span>
-          <span class="stat-label" data-i18n="stat_releases">Releases</span>
         </div>
       </div>
 
@@ -210,6 +197,6 @@
     <span class="lightbox-arrow lightbox-next" onclick="window.navigateLightbox(1, event)">&#10095;</span>
   </div>
 
-  <script src="app.js?v=5.0"></script>
+  <script src="app.js?v=6.0"></script>
 </body>
 </html>
