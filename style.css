@@ -62,8 +62,8 @@ a { color: inherit; text-decoration: none; }
 
 .plasma-bg {
   position: fixed; inset: 0;
-  background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(201,146,42,0.10) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 50% at 100% 100%, rgba(201,146,42,0.05) 0%, transparent 55%);
+  background: radial-gradient(ellipse 60% 40% at 50% -15%, rgba(201,146,42,0.045) 0%, transparent 55%),
+              radial-gradient(ellipse 60% 50% at 100% 100%, rgba(201,146,42,0.03) 0%, transparent 55%);
   z-index: -1;
 }
 
@@ -170,27 +170,6 @@ a { color: inherit; text-decoration: none; }
   pointer-events: none;
 }
 
-/* Haz de luz cenital detrás del logo: el golpe de efecto del hero. */
-.hero-beam {
-  position: absolute; inset: 0; z-index: -1;
-  background: conic-gradient(from 180deg at 50% 0%,
-              transparent 0deg,
-              rgba(201,146,42,0.00) 60deg,
-              rgba(240,192,96,0.16) 88deg,
-              rgba(240,192,96,0.28) 90deg,
-              rgba(240,192,96,0.16) 92deg,
-              rgba(201,146,42,0.00) 120deg,
-              transparent 360deg);
-  mask-image: linear-gradient(to bottom, black 0%, rgba(0,0,0,0.5) 45%, transparent 78%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0,0,0,0.5) 45%, transparent 78%);
-  animation: beam-breathe 7s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-@keyframes beam-breathe {
-  from { opacity: 0.55; transform: scaleX(0.92); }
-  to   { opacity: 1;    transform: scaleX(1.08); }
-}
-
 .hero-vignette {
   position: absolute;
   inset: 0;
@@ -255,9 +234,8 @@ a { color: inherit; text-decoration: none; }
   font-weight: 900; letter-spacing: 0.1em;
   color: var(--white);
   padding-left: 0.1em; /* compensa el letter-spacing de la última letra */
-  text-shadow: 0 0 12px rgba(255,255,255,0.18),
-               0 0 70px rgba(201,146,42,0.35),
-               0 6px 30px rgba(0,0,0,0.75);
+  text-shadow: 0 0 18px rgba(255,255,255,0.22),
+               0 6px 30px rgba(0,0,0,0.8);
 }
 .title-sub {
   font-size: clamp(0.95rem, 3vw, 1.6rem);
@@ -730,7 +708,7 @@ a { color: inherit; text-decoration: none; }
 /* Respeta a quien pide menos movimiento en el sistema. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero-bg-img, .hero-beam, .btn-download::after,
+  .hero-bg-img, .btn-download::after,
   .hero-logo-img, .hero-logo-ring, .nav-logo-img, .badge-dot, .title-sub,
   .feature-card {
     animation: none !important;
