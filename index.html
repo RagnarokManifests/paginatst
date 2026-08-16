@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=6.0" />
+  <link rel="stylesheet" href="style.css?v=7.0" />
 </head>
 <body>
 
@@ -99,13 +99,6 @@
         </div>
       </div>
 
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-value" id="stat-version">—</span>
-          <span class="stat-label" data-i18n="stat_version">Versión</span>
-        </div>
-      </div>
-
     </div>
 
   </section>
@@ -122,22 +115,28 @@
 
           <div class="gallery-wrap">
             <div class="gallery-main" onclick="window.openLightbox()">
-              <img id="gallery-active-img" src="fotos de la pagina/screenshot_home.png" alt="Ragnarok Launcher Home" />
-              <div class="gallery-caption" id="gallery-active-caption" data-i18n="cap_home">Panel de Control: Estado del servicio y estadísticas del launcher</div>
+              <img id="gallery-active-img" src="fotos de la pagina/shot_home.webp" alt="Ragnarok Launcher Home" />
+              <div class="gallery-caption" id="gallery-active-caption" data-i18n="cap_home">Panel de Control: estado de Steam, reparador automático y herramientas en un clic</div>
             </div>
 
             <div class="gallery-thumbs">
-              <div class="thumb active" onclick="setGalleryImage('screenshot_home.png', 'cap_home', this)">
-                <img src="fotos de la pagina/screenshot_home.png" alt="Home" />
+              <div class="thumb active" onclick="setGalleryImage('shot_home.webp', 'cap_home', this)">
+                <img src="fotos de la pagina/shot_home.webp" alt="Home" loading="lazy" />
               </div>
-              <div class="thumb" onclick="setGalleryImage('screenshot_library.png', 'cap_library', this)">
-                <img src="fotos de la pagina/screenshot_library.png" alt="Library" />
+              <div class="thumb" onclick="setGalleryImage('shot_games.webp', 'cap_games', this)">
+                <img src="fotos de la pagina/shot_games.webp" alt="Games" loading="lazy" />
               </div>
-              <div class="thumb" onclick="setGalleryImage('screenshot_online.png', 'cap_online', this)">
-                <img src="fotos de la pagina/screenshot_online.png" alt="Multiplayer" />
+              <div class="thumb" onclick="setGalleryImage('shot_library.webp', 'cap_library', this)">
+                <img src="fotos de la pagina/shot_library.webp" alt="Library" loading="lazy" />
               </div>
-              <div class="thumb" onclick="setGalleryImage('screenshot_settings.png', 'cap_settings', this)">
-                <img src="fotos de la pagina/screenshot_settings.png" alt="Settings" />
+              <div class="thumb" onclick="setGalleryImage('shot_online.webp', 'cap_online', this)">
+                <img src="fotos de la pagina/shot_online.webp" alt="Online" loading="lazy" />
+              </div>
+              <div class="thumb" onclick="setGalleryImage('shot_bypass.webp', 'cap_bypass', this)">
+                <img src="fotos de la pagina/shot_bypass.webp" alt="Bypass" loading="lazy" />
+              </div>
+              <div class="thumb" onclick="setGalleryImage('shot_achievements.webp', 'cap_achievements', this)">
+                <img src="fotos de la pagina/shot_achievements.webp" alt="Achievements" loading="lazy" />
               </div>
             </div>
           </div>
@@ -197,6 +196,6 @@
     <span class="lightbox-arrow lightbox-next" onclick="window.navigateLightbox(1, event)">&#10095;</span>
   </div>
 
-  <script src="app.js?v=6.0"></script>
+  <script src="app.js?v=7.0"></script>
 </body>
 </html>

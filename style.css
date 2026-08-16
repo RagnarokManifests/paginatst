@@ -281,38 +281,40 @@ a { color: inherit; text-decoration: none; }
 
 .btn-download {
   position: relative; overflow: hidden;
-  display: flex; align-items: center; gap: 16px; cursor: pointer;
-  background: linear-gradient(160deg, var(--gold-lt) 0%, var(--gold) 55%, var(--gold-deep) 100%);
-  border: 1px solid rgba(255, 231, 176, 0.55);
-  border-radius: 14px; padding: 16px 32px 16px 26px;
+  display: flex; align-items: center; gap: 14px; cursor: pointer;
+  background: linear-gradient(180deg, #f5cf7d 0%, var(--gold) 52%, #a8741d 100%);
+  border: 1px solid rgba(255, 236, 190, 0.7);
+  border-radius: 12px; padding: 15px 30px 15px 24px;
   font-family: var(--ff-body);
   color: #2a1c05;
-  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
-  box-shadow: 0 6px 30px rgba(201, 146, 42, 0.35),
-              0 0 0 5px rgba(201, 146, 42, 0.10),
-              inset 0 1px 0 rgba(255,255,255,0.45);
-  animation: cta-pulse 3.5s ease-in-out infinite;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), filter 0.25s var(--ease);
+  /* Sombra corta y definida en vez del halo difuso de antes: el brillo se
+     apoya en el relieve del degradado, no en una mancha amarilla alrededor. */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.45),
+              0 10px 24px -8px rgba(201,146,42,0.65),
+              inset 0 1px 0 rgba(255,255,255,0.65),
+              inset 0 -2px 4px rgba(120,78,10,0.35);
 }
-/* Brillo que cruza el botón para que el ojo caiga siempre acá. */
+/* Brillo que cruza el botón cada tanto, contenido dentro del borde. */
 .btn-download::after {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%);
-  transform: translateX(-120%);
-  animation: cta-shine 4.5s ease-in-out infinite;
+  background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,0.45) 50%, transparent 58%);
+  transform: translateX(-130%);
+  animation: cta-shine 6s ease-in-out infinite;
   pointer-events: none;
 }
 @keyframes cta-shine {
-  0%, 55%  { transform: translateX(-120%); }
-  80%,100% { transform: translateX(120%); }
-}
-@keyframes cta-pulse {
-  0%,100% { box-shadow: 0 6px 30px rgba(201,146,42,0.35), 0 0 0 5px rgba(201,146,42,0.10), inset 0 1px 0 rgba(255,255,255,0.45); }
-  50%     { box-shadow: 0 8px 42px rgba(240,192,96,0.55), 0 0 0 9px rgba(201,146,42,0.06), inset 0 1px 0 rgba(255,255,255,0.45); }
+  0%, 70%  { transform: translateX(-130%); }
+  90%,100% { transform: translateX(130%); }
 }
 .btn-download:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 14px 50px rgba(240, 192, 96, 0.5), 0 0 0 6px rgba(201, 146, 42, 0.14), inset 0 1px 0 rgba(255,255,255,0.5);
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.45),
+              0 16px 32px -10px rgba(240,192,96,0.75),
+              inset 0 1px 0 rgba(255,255,255,0.7),
+              inset 0 -2px 4px rgba(120,78,10,0.3);
 }
 .btn-download:active { transform: translateY(-1px) scale(0.99); }
 .btn-download:focus-visible {
@@ -426,26 +428,6 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; gap: 8px;
   font-size: 0.78rem; color: var(--muted);
   margin-bottom: 2.5rem;
-}
-
-.hero-stats {
-  margin-top: 2rem;
-  display: inline-flex; align-items: center; gap: 2.5rem;
-  background: rgba(13,17,23,0.5);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg); padding: 0.8rem 2.2rem;
-  backdrop-filter: blur(16px);
-}
-.stat { text-align: center; }
-.stat-value {
-  display: block;
-  font-family: var(--ff-title); font-size: 1.5rem; font-weight: 700;
-  color: var(--gold-lt); line-height: 1.1;
-}
-.stat-label {
-  display: block; font-size: 0.68rem; font-weight: 500;
-  color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;
-  margin-top: 2px;
 }
 
 #interactive-section {
@@ -619,7 +601,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .gallery-thumbs {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.75rem;
 }
 .thumb {
   border-radius: var(--r); overflow: hidden;
@@ -738,12 +720,7 @@ a { color: inherit; text-decoration: none; }
   .download-container { width: 100%; }
   .btn-download { width: 100%; justify-content: center; padding: 16px 20px; }
   .download-panel { width: 100%; max-width: 340px; }
-  .hero-stats {
-    gap: 1.2rem; padding: 0.9rem 1.2rem; width: 100%;
-    justify-content: space-around;
-  }
-  .stat-value { font-size: 1.25rem; }
-  .gallery-thumbs { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+  .gallery-thumbs { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
   .gallery-header { margin-bottom: 2rem; }
 }
 @media (max-width: 400px) {
@@ -753,7 +730,7 @@ a { color: inherit; text-decoration: none; }
 /* Respeta a quien pide menos movimiento en el sistema. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero-bg-img, .hero-beam, .btn-download, .btn-download::after,
+  .hero-bg-img, .hero-beam, .btn-download::after,
   .hero-logo-img, .hero-logo-ring, .nav-logo-img, .badge-dot, .title-sub,
   .feature-card {
     animation: none !important;

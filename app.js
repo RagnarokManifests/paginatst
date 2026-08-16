@@ -13,7 +13,6 @@ const i18n = {
     hero_title_main: "RAGNAROK",
     hero_title_sub: "LAUNCHER",
     hero_subtitle: "Tu acceso directo al mundo del gaming en Steam.<br>Lanza, gestiona y actualiza tus juegos con un solo clic.",
-    stat_version: "Versión",
     feat1_title: "Lanzamiento Rápido",
     feat1_desc: "Inicia tus juegos de Steam directamente sin pasos extra.",
     feat2_title: "Actualizaciones Automáticas",
@@ -27,10 +26,12 @@ const i18n = {
     gallery_tag: "Interfaz",
     gallery_title: "Explora el Launcher",
     gallery_desc: "Echa un vistazo a la interfaz limpia, rápida y configurable de Ragnarok Launcher.",
-    cap_home: "Panel de Control: Estado del servicio y estadísticas del launcher",
-    cap_library: "Biblioteca: Gestiona tu colección de juegos con un diseño moderno",
-    cap_online: "Multijugador: Base de datos y parches de red integrados en un solo clic",
-    cap_settings: "Ajustes: Personalización de idioma, guardado en la nube y color de acento"
+    cap_home: "Panel de Control: estado de Steam, reparador automático y herramientas en un clic",
+    cap_games: "Juegos: busca por nombre o AppID entre miles de fichas",
+    cap_library: "Biblioteca: gestiona tu colección instalada con acciones rápidas",
+    cap_online: "Multijugador: plataformas y parches de red listos para usar",
+    cap_bypass: "Bypass: catálogo de descargas con buscador y filtros",
+    cap_achievements: "Logros: progreso por juego, reflejado directamente en Steam"
   },
   en: {
     nav_download: "Download",
@@ -40,7 +41,6 @@ const i18n = {
     hero_title_main: "RAGNAROK",
     hero_title_sub: "LAUNCHER",
     hero_subtitle: "Your direct access to the world of Steam gaming.<br>Launch, manage, and update your games with a single click.",
-    stat_version: "Version",
     feat1_title: "Quick Launch",
     feat1_desc: "Start your Steam games directly without extra steps.",
     feat2_title: "Automatic Updates",
@@ -54,10 +54,12 @@ const i18n = {
     gallery_tag: "Interface",
     gallery_title: "Explore the Launcher",
     gallery_desc: "Take a look at the clean, fast, and customizable interface of Ragnarok Launcher.",
-    cap_home: "Dashboard: Service status and launcher statistics",
-    cap_library: "Library: Manage your game collection with a modern design",
-    cap_online: "Multiplayer: Network fixes and database integrated in one click",
-    cap_settings: "Settings: Customize language, cloud-saves, and accent color"
+    cap_home: "Dashboard: Steam status, auto-repair and one-click tools",
+    cap_games: "Games: search by name or AppID across thousands of titles",
+    cap_library: "Library: manage your installed collection with quick actions",
+    cap_online: "Multiplayer: network platforms and fixes ready to use",
+    cap_bypass: "Bypass: download catalog with search and filters",
+    cap_achievements: "Achievements: per-game progress, mirrored straight from Steam"
   }
 };
 
@@ -343,7 +345,6 @@ function applyReleaseData(valid) {
   latestVersionTag = valid[0].tag_name;
   renderHero();
   renderCard(valid[0]);
-  renderStats(valid);
 }
 
 function renderHero() {
@@ -369,11 +370,6 @@ function renderCard(latest) {
   }
 }
 
-function renderStats(releases) {
-  const sv = document.getElementById('stat-version');
-  if (sv) sv.textContent = releases[0].tag_name;
-}
-
 function fallback() {
   // Dejar el link en # para que el interceptor de clic reintente al vuelo
   const link = document.getElementById('download-link-windows');
@@ -391,17 +387,21 @@ function fallback() {
 }
 
 const galleryImages = [
-  'screenshot_home.png',
-  'screenshot_library.png',
-  'screenshot_online.png',
-  'screenshot_settings.png'
+  'shot_home.webp',
+  'shot_games.webp',
+  'shot_library.webp',
+  'shot_online.webp',
+  'shot_bypass.webp',
+  'shot_achievements.webp'
 ];
 
 const galleryCaptions = [
   'cap_home',
+  'cap_games',
   'cap_library',
   'cap_online',
-  'cap_settings'
+  'cap_bypass',
+  'cap_achievements'
 ];
 let activeGalleryIndex = 0;
 let galleryInterval;
