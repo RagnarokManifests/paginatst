@@ -8,7 +8,6 @@ const APPIMAGE_REGEX = /\.AppImage$/i;
 const i18n = {
   es: {
     nav_download: "Descargar",
-    nav_donate: "Donar",
     hero_badge: "Nueva versión disponible:",
     hero_loading: "Cargando versión...",
     hero_title_main: "RAGNAROK",
@@ -22,7 +21,6 @@ const i18n = {
     feat3_desc: "Sin bloatware, sin anuncios. Solo lo que necesitas para jugar.",
     btn_install: "Instalar",
     dl_tag: "Windows x64",
-    linux_dev: "En desarrollo",
     dl_note: "Al descargar aceptas los términos de uso. Compatible con Windows 10 / 11 (64-bit).",
     footer_copy: "© 2026 Ragnarok Launcher. Todos los derechos reservados.",
     gallery_tag: "Interfaz",
@@ -37,7 +35,6 @@ const i18n = {
   },
   en: {
     nav_download: "Download",
-    nav_donate: "Donate",
     hero_badge: "New version available:",
     hero_loading: "Loading version...",
     hero_title_main: "RAGNAROK",
@@ -51,7 +48,6 @@ const i18n = {
     feat3_desc: "No bloatware, no ads. Only what you need to play.",
     btn_install: "Install",
     dl_tag: "Windows x64",
-    linux_dev: "In development",
     dl_note: "By downloading you accept the terms of use. Compatible with Windows 10 / 11 (64-bit).",
     footer_copy: "© 2026 Ragnarok Launcher. All rights reserved.",
     gallery_tag: "Interface",
@@ -266,50 +262,40 @@ function formatDate(iso) {
     panel.classList.remove('visible');
   }, { passive: true });
 
-  // Interceptor: si se hace clic en Windows antes de que cargue la URL, la busca al momento
-  const winLink = document.getElementById('download-link-windows');
-  if (winLink) {
-    winLink.addEventListener('click', async (e) => {
-      const href = winLink.getAttribute('href');
-      if (!href || href === '#') {
-        e.preventDefault();
-        const desc = document.getElementById('download-desc-windows');
-        if (desc) desc.textContent = 'Obteniendo enlace...';
-        try {
-          const res = await fetch(RELEASES_JSON_URL, { cache: 'no-store' });
-          if (!res.ok) throw new Error();
-          const valid = await res.json();
-          if (!Array.isArray(valid) || !valid.length) throw new Error();
-          applyReleaseData(valid);
-          winLink.click(); // disparar la descarga ahora
-        } catch {
-          if (desc) desc.textContent = 'Error. Reintenta.';
+  // Interceptor: si se hace clic antes de que la URL real esté cargada, la busca al
+  // momento. Mientras no haya href el <a> no navega, así que nunca puede acabar
+  // guardando la propia página como "download.html".
+  function attachLazyDownload(linkId, descId) {
+    const link = document.getElementById(linkId);
+    if (!link) return;
+    let resolving = false;
+
+    link.addEventListener('click', async (e) => {
+      if (link.getAttribute('href')) return; // ya tenemos el enlace real
+      e.preventDefault();
+      if (resolving) return;
+      resolving = true;
+
+      const desc = document.getElementById(descId);
+      const prev = desc?.textContent;
+      if (desc) desc.textContent = 'Obteniendo enlace...';
+      try {
+        await loadReleases();
+        if (link.getAttribute('href')) {
+          link.click(); // ahora sí dispara la descarga
+        } else if (desc) {
+          desc.textContent = 'No disponible aún';
         }
+      } catch {
+        if (desc) desc.textContent = prev || 'Error. Reintenta.';
+      } finally {
+        resolving = false;
       }
     });
   }
 
-  const linuxLink = document.getElementById('download-link-linux');
-  if (linuxLink) {
-    linuxLink.addEventListener('click', async (e) => {
-      const href = linuxLink.getAttribute('href');
-      if (!href || href === '#') {
-        e.preventDefault();
-        const desc = document.getElementById('download-desc-linux');
-        if (desc) desc.textContent = 'Obteniendo enlace...';
-        try {
-          const res = await fetch(RELEASES_JSON_URL, { cache: 'no-store' });
-          if (!res.ok) throw new Error();
-          const valid = await res.json();
-          if (!Array.isArray(valid) || !valid.length) throw new Error();
-          applyReleaseData(valid);
-          linuxLink.click(); // disparar la descarga ahora
-        } catch {
-          if (desc) desc.textContent = 'Error. Reintenta.';
-        }
-      }
-    });
-  }
+  attachLazyDownload('download-link-windows', 'download-desc-windows');
+  attachLazyDownload('download-link-linux', 'download-desc-linux');
 })();
 
 window.addEventListener('scroll', () => {
@@ -340,11 +326,11 @@ async function loadReleases() {
     if (!Array.isArray(valid) || !valid.length) throw new Error('Sin releases con .exe');
 
     applyReleaseData(valid);
-    checkLiveLatest(valid);
+    await checkLiveLatest(valid);
   } catch (err) {
     console.error(err);
     fallback();
-    checkLiveLatest([]);
+    await checkLiveLatest([]);
   }
 }
 
@@ -358,12 +344,29 @@ async function checkLiveLatest(valid) {
 
     const live = await res.json();
     if (!live?.tag_name || !live.assets?.length) return;
-    if (valid[0] && live.tag_name === valid[0].tag_name) return;
+
+    const cached = valid[0];
+    if (cached && live.tag_name === cached.tag_name) {
+      // Mismo tag, pero releases.json puede haberse generado antes de que se
+      // subieran todos los assets (fue el caso del .AppImage). Si la API trae
+      // alguno que falta, mezclamos en vez de salir.
+      const falta = live.assets.some(a => !cached.assets?.some(c => c.name === a.name));
+      if (!falta) return;
+      applyReleaseData([{ ...live, assets: mergeAssets(cached.assets, live.assets) }, ...valid.slice(1)]);
+      return;
+    }
 
     applyReleaseData([live, ...valid.filter(r => r.tag_name !== live.tag_name)]);
   } catch (err) {
     console.error(err);
   }
+}
+
+// releases.json incluye un .zip espejado en este repo que no existe en el release
+// de GitHub: al mezclar con la API hay que conservarlo y no duplicar el resto.
+function mergeAssets(cachedAssets = [], liveAssets = []) {
+  const propios = cachedAssets.filter(c => !liveAssets.some(l => l.name === c.name));
+  return [...liveAssets, ...propios];
 }
 
 function applyReleaseData(valid) {
@@ -385,32 +388,38 @@ function renderCard(latest) {
   const windowsAsset = latest.assets.find(a => ZIP_REGEX.test(a.name)) || latest.assets.find(a => EXE_REGEX.test(a.name));
   const linuxAsset = latest.assets.find(a => APPIMAGE_REGEX.test(a.name));
 
-  const setId = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+  setDownload('download-link-windows', 'download-desc-windows', windowsAsset);
+  setDownload('download-link-linux', 'download-desc-linux', linuxAsset);
+}
 
-  const winLink = document.getElementById('download-link-windows');
-  if (winLink && windowsAsset) {
-    winLink.href = windowsAsset.browser_download_url;
-    winLink.setAttribute('download', windowsAsset.name.replace(/^ragnarok-/i, ''));
-    document.getElementById('download-desc-windows').textContent = `${latestVersionTag} | ${formatBytes(windowsAsset.size)}`;
+// Sin asset dejamos el <a> sin href ni download: así el navegador no lo trata como
+// descarga y no se guarda la página actual.
+function setDownload(linkId, descId, asset) {
+  const link = document.getElementById(linkId);
+  const desc = document.getElementById(descId);
+  if (!link) return;
+
+  if (!asset) {
+    link.removeAttribute('href');
+    link.removeAttribute('download');
+    return;
   }
 
-  const linuxLink = document.getElementById('download-link-linux');
-  if (linuxLink && linuxAsset) {
-    linuxLink.href = linuxAsset.browser_download_url;
-    linuxLink.setAttribute('download', linuxAsset.name.replace(/^ragnarok-/i, ''));
-    linuxLink.classList.add('active');
-    document.getElementById('download-desc-linux').textContent = `${latestVersionTag} | ${formatBytes(linuxAsset.size)}`;
-  }
+  link.href = asset.browser_download_url;
+  link.setAttribute('download', asset.name.replace(/^ragnarok-/i, ''));
+  if (desc) desc.textContent = `${latestVersionTag} | ${formatBytes(asset.size)}`;
 }
 
 function fallback() {
-  // Dejar el link en # para que el interceptor de clic reintente al vuelo
-  const link = document.getElementById('download-link-windows');
-  if (link) {
-    link.href = '#';
-    const desc = document.getElementById('download-desc-windows');
-    if (desc) desc.textContent = 'Haz clic para descargar';
-  }
+  // Sin href el <a> es inerte; el interceptor de clic reintenta al vuelo.
+  ['download-link-windows', 'download-link-linux'].forEach(id => {
+    const link = document.getElementById(id);
+    if (!link) return;
+    link.removeAttribute('href');
+    link.removeAttribute('download');
+  });
+  const desc = document.getElementById('download-desc-windows');
+  if (desc) desc.textContent = 'Haz clic para descargar';
   const textEl = document.getElementById('hero-badge-text');
   const badgeContainer = textEl?.closest('.version-badge');
   if (textEl && badgeContainer) {
