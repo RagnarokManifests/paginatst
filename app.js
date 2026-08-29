@@ -3,6 +3,7 @@ const RELEASES_JSON_URL = 'releases.json';
 const LATEST_RELEASE_API_URL = 'https://api.github.com/repos/RagnarokManifests/games/releases/latest';
 const EXE_REGEX  = /\.exe$/i;
 const ZIP_REGEX  = /\.zip$/i;
+const APPIMAGE_REGEX = /\.AppImage$/i;
 
 const i18n = {
   es: {
@@ -287,6 +288,28 @@ function formatDate(iso) {
       }
     });
   }
+
+  const linuxLink = document.getElementById('download-link-linux');
+  if (linuxLink) {
+    linuxLink.addEventListener('click', async (e) => {
+      const href = linuxLink.getAttribute('href');
+      if (!href || href === '#') {
+        e.preventDefault();
+        const desc = document.getElementById('download-desc-linux');
+        if (desc) desc.textContent = 'Obteniendo enlace...';
+        try {
+          const res = await fetch(RELEASES_JSON_URL, { cache: 'no-store' });
+          if (!res.ok) throw new Error();
+          const valid = await res.json();
+          if (!Array.isArray(valid) || !valid.length) throw new Error();
+          applyReleaseData(valid);
+          linuxLink.click(); // disparar la descarga ahora
+        } catch {
+          if (desc) desc.textContent = 'Error. Reintenta.';
+        }
+      }
+    });
+  }
 })();
 
 window.addEventListener('scroll', () => {
@@ -334,7 +357,7 @@ async function checkLiveLatest(valid) {
     if (!res.ok) return;
 
     const live = await res.json();
-    if (!live?.tag_name || !live.assets?.some(a => EXE_REGEX.test(a.name))) return;
+    if (!live?.tag_name || !live.assets?.length) return;
     if (valid[0] && live.tag_name === valid[0].tag_name) return;
 
     applyReleaseData([live, ...valid.filter(r => r.tag_name !== live.tag_name)]);
@@ -359,16 +382,24 @@ function renderHero() {
 }
 
 function renderCard(latest) {
-  const asset = latest.assets.find(a => ZIP_REGEX.test(a.name)) || latest.assets.find(a => EXE_REGEX.test(a.name));
-  if (!asset) return;
+  const windowsAsset = latest.assets.find(a => ZIP_REGEX.test(a.name)) || latest.assets.find(a => EXE_REGEX.test(a.name));
+  const linuxAsset = latest.assets.find(a => APPIMAGE_REGEX.test(a.name));
 
   const setId = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
 
-  const link = document.getElementById('download-link-windows');
-  if (link) {
-    link.href = asset.browser_download_url;
-    link.setAttribute('download', asset.name.replace(/^ragnarok-/i, ''));
-    document.getElementById('download-desc-windows').textContent = `${latestVersionTag} | ${formatBytes(asset.size)}`;
+  const winLink = document.getElementById('download-link-windows');
+  if (winLink && windowsAsset) {
+    winLink.href = windowsAsset.browser_download_url;
+    winLink.setAttribute('download', windowsAsset.name.replace(/^ragnarok-/i, ''));
+    document.getElementById('download-desc-windows').textContent = `${latestVersionTag} | ${formatBytes(windowsAsset.size)}`;
+  }
+
+  const linuxLink = document.getElementById('download-link-linux');
+  if (linuxLink && linuxAsset) {
+    linuxLink.href = linuxAsset.browser_download_url;
+    linuxLink.setAttribute('download', linuxAsset.name.replace(/^ragnarok-/i, ''));
+    linuxLink.classList.add('active');
+    document.getElementById('download-desc-linux').textContent = `${latestVersionTag} | ${formatBytes(linuxAsset.size)}`;
   }
 }
 
