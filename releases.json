@@ -34,13 +34,13 @@
     "immutable": false,
     "prerelease": false,
     "created_at": "2026-08-26T22:46:48Z",
-    "updated_at": "2026-08-29T07:14:50Z",
+    "updated_at": "2026-09-03T20:32:54Z",
     "published_at": "2026-08-28T23:55:29Z",
     "assets": [
       {
-        "url": "https://api.github.com/repos/RagnarokManifests/games/releases/assets/534898782",
-        "id": 534898782,
-        "node_id": "RA_kwDOOzZiN84f4ehe",
+        "url": "https://api.github.com/repos/RagnarokManifests/games/releases/assets/543302478",
+        "id": 543302478,
+        "node_id": "RA_kwDOOzZiN84gYiNO",
         "name": "ragnarok-launcher_2.1.6_amd64.AppImage",
         "label": null,
         "uploader": {
@@ -66,11 +66,11 @@
         },
         "content_type": "application/octet-stream",
         "state": "uploaded",
-        "size": 113928696,
-        "digest": "sha256:f69061c49323053f5b9d1d78f3004cf4ad650cbb4f82a4a751e63b9e8ba4d5e8",
-        "download_count": 12,
-        "created_at": "2026-08-29T07:14:44Z",
-        "updated_at": "2026-08-29T07:14:50Z",
+        "size": 87984632,
+        "digest": "sha256:444eed10507ec9442b9f433a539ffaa555d7da939c95258eef97afb872f87ba6",
+        "download_count": 0,
+        "created_at": "2026-09-03T20:32:48Z",
+        "updated_at": "2026-09-03T20:32:54Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.1.6/ragnarok-launcher_2.1.6_amd64.AppImage"
       },
       {
@@ -104,7 +104,7 @@
         "state": "uploaded",
         "size": 10812170,
         "digest": "sha256:2837218e66412296e31e7861360dbbeba40ab83f24debc1dfdd5d522e5c52e1d",
-        "download_count": 627,
+        "download_count": 632,
         "created_at": "2026-08-28T23:54:09Z",
         "updated_at": "2026-08-28T23:54:46Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.1.6/ragnarok-launcher_2.1.6_x64-setup.exe"
