@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 87984632,
         "digest": "sha256:444eed10507ec9442b9f433a539ffaa555d7da939c95258eef97afb872f87ba6",
-        "download_count": 13,
+        "download_count": 14,
         "created_at": "2026-09-03T20:32:48Z",
         "updated_at": "2026-09-03T20:32:54Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.1.6/ragnarok-launcher_2.1.6_amd64.AppImage"
