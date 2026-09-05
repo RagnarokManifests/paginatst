@@ -1,5 +1,6 @@
 const RELEASES_JSON_URL = 'releases.json';
 // Consulta en vivo a GitHub para no depender de que releases.json ya esté actualizado.
+const RELEASES_API_URL = 'https://api.github.com/repos/RagnarokManifests/games/releases?per_page=5';
 const LATEST_RELEASE_API_URL = 'https://api.github.com/repos/RagnarokManifests/games/releases/latest';
 const EXE_REGEX  = /\.exe$/i;
 const ZIP_REGEX  = /\.zip$/i;
@@ -22,6 +23,9 @@ const i18n = {
     btn_install: "Instalar",
     dl_tag: "Windows x64",
     dl_note: "Al descargar aceptas los términos de uso. Compatible con Windows 10 / 11 (64-bit).",
+    dl_not_available: "No disponible aún",
+    dl_fetching: "Obteniendo enlace...",
+    dl_error: "Error. Reintenta.",
     footer_copy: "© 2026 Ragnarok Launcher. Todos los derechos reservados.",
     gallery_tag: "Interfaz",
     gallery_title: "Explora el Launcher",
@@ -49,6 +53,9 @@ const i18n = {
     btn_install: "Install",
     dl_tag: "Windows x64",
     dl_note: "By downloading you accept the terms of use. Compatible with Windows 10 / 11 (64-bit).",
+    dl_not_available: "Not available yet",
+    dl_fetching: "Fetching link...",
+    dl_error: "Error. Retry.",
     footer_copy: "© 2026 Ragnarok Launcher. All rights reserved.",
     gallery_tag: "Interface",
     gallery_title: "Explore the Launcher",
@@ -64,6 +71,7 @@ const i18n = {
 
 let currentLang = localStorage.getItem('lang') || 'en';
 let latestVersionTag = '';
+let currentReleasesData = [];
 
 function updateLanguage(lang) {
   currentLang = lang;
@@ -89,6 +97,10 @@ function updateLanguage(lang) {
   const langText = document.getElementById('lang-text');
   if (langText) {
     langText.textContent = lang === 'es' ? 'EN' : 'ES';
+  }
+
+  if (currentReleasesData && currentReleasesData.length) {
+    applyReleaseData(currentReleasesData);
   }
 }
 
@@ -273,21 +285,22 @@ function formatDate(iso) {
     link.addEventListener('click', async (e) => {
       if (link.getAttribute('href')) return; // ya tenemos el enlace real
       e.preventDefault();
+      if (link.classList.contains('disabled')) return;
       if (resolving) return;
       resolving = true;
 
       const desc = document.getElementById(descId);
       const prev = desc?.textContent;
-      if (desc) desc.textContent = 'Obteniendo enlace...';
+      if (desc) desc.textContent = i18n[currentLang]?.dl_fetching || 'Obteniendo enlace...';
       try {
         await loadReleases();
         if (link.getAttribute('href')) {
           link.click(); // ahora sí dispara la descarga
         } else if (desc) {
-          desc.textContent = 'No disponible aún';
+          desc.textContent = i18n[currentLang]?.dl_not_available || 'No disponible aún';
         }
       } catch {
-        if (desc) desc.textContent = prev || 'Error. Reintenta.';
+        if (desc) desc.textContent = prev || (i18n[currentLang]?.dl_error || 'Error. Reintenta.');
       } finally {
         resolving = false;
       }
@@ -323,7 +336,7 @@ async function loadReleases() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
     const valid = await res.json();
-    if (!Array.isArray(valid) || !valid.length) throw new Error('Sin releases con .exe');
+    if (!Array.isArray(valid) || !valid.length) throw new Error('Sin releases válidos');
 
     applyReleaseData(valid);
     await checkLiveLatest(valid);
@@ -335,28 +348,18 @@ async function loadReleases() {
 }
 
 // releases.json lo regenera un workflow, así que puede ir unos minutos atrás del
-// release real. Preguntamos a la API de GitHub y, si hay algo más nuevo, lo usamos.
-// Si falla (rate limit, sin red, etc.) se queda lo que ya se mostró.
+// release real. Consultamos los últimos releases a la API de GitHub para reflejar
+// cualquier versión nueva inmediatamente (tanto en Windows como en Linux).
 async function checkLiveLatest(valid) {
   try {
-    const res = await fetch(LATEST_RELEASE_API_URL, { cache: 'no-store' });
+    const res = await fetch(RELEASES_API_URL, { cache: 'no-store' });
     if (!res.ok) return;
 
-    const live = await res.json();
-    if (!live?.tag_name || !live.assets?.length) return;
+    const liveList = await res.json();
+    if (!Array.isArray(liveList) || !liveList.length) return;
 
-    const cached = valid[0];
-    if (cached && live.tag_name === cached.tag_name) {
-      // Mismo tag, pero releases.json puede haberse generado antes de que se
-      // subieran todos los assets (fue el caso del .AppImage). Si la API trae
-      // alguno que falta, mezclamos en vez de salir.
-      const falta = live.assets.some(a => !cached.assets?.some(c => c.name === a.name));
-      if (!falta) return;
-      applyReleaseData([{ ...live, assets: mergeAssets(cached.assets, live.assets) }, ...valid.slice(1)]);
-      return;
-    }
-
-    applyReleaseData([live, ...valid.filter(r => r.tag_name !== live.tag_name)]);
+    const merged = mergeReleases(valid, liveList);
+    applyReleaseData(merged);
   } catch (err) {
     console.error(err);
   }
@@ -365,14 +368,61 @@ async function checkLiveLatest(valid) {
 // releases.json incluye un .zip espejado en este repo que no existe en el release
 // de GitHub: al mezclar con la API hay que conservarlo y no duplicar el resto.
 function mergeAssets(cachedAssets = [], liveAssets = []) {
-  const propios = cachedAssets.filter(c => !liveAssets.some(l => l.name === c.name));
-  return [...liveAssets, ...propios];
+  const propios = (cachedAssets || []).filter(c => !(liveAssets || []).some(l => l.name === c.name));
+  return [...(liveAssets || []), ...propios];
+}
+
+function mergeReleases(cachedReleases = [], liveReleases = []) {
+  const mergedMap = new Map();
+
+  for (const live of liveReleases) {
+    const cached = cachedReleases.find(c => c.tag_name === live.tag_name || c.id === live.id);
+    const assets = cached ? mergeAssets(cached.assets, live.assets) : (live.assets || []);
+    mergedMap.set(live.tag_name, { ...live, assets });
+  }
+
+  for (const cached of cachedReleases) {
+    if (!mergedMap.has(cached.tag_name)) {
+      mergedMap.set(cached.tag_name, cached);
+    }
+  }
+
+  return Array.from(mergedMap.values());
 }
 
 function applyReleaseData(valid) {
+  if (!Array.isArray(valid) || !valid.length) return;
+  currentReleasesData = valid;
+
   latestVersionTag = valid[0].tag_name;
   renderHero();
-  renderCard(valid[0]);
+
+  // Buscar el instalador más reciente para Windows recorriendo las versiones disponibles
+  let windowsAsset = null;
+  let windowsTag = '';
+  for (const r of valid) {
+    const asset = r.assets?.find(a => ZIP_REGEX.test(a.name)) || r.assets?.find(a => EXE_REGEX.test(a.name));
+    if (asset) {
+      windowsAsset = asset;
+      windowsTag = r.tag_name;
+      break;
+    }
+  }
+
+  // Buscar el instalador más reciente para Linux recorriendo las versiones disponibles
+  let linuxAsset = null;
+  let linuxTag = '';
+  for (const r of valid) {
+    const asset = r.assets?.find(a => APPIMAGE_REGEX.test(a.name));
+    if (asset) {
+      linuxAsset = asset;
+      linuxTag = r.tag_name;
+      break;
+    }
+  }
+
+  setDownload('download-link-windows', 'download-desc-windows', windowsAsset, windowsTag);
+  setDownload('download-link-linux', 'download-desc-linux', linuxAsset, linuxTag);
 }
 
 function renderHero() {
@@ -384,17 +434,8 @@ function renderHero() {
   }
 }
 
-function renderCard(latest) {
-  const windowsAsset = latest.assets.find(a => ZIP_REGEX.test(a.name)) || latest.assets.find(a => EXE_REGEX.test(a.name));
-  const linuxAsset = latest.assets.find(a => APPIMAGE_REGEX.test(a.name));
-
-  setDownload('download-link-windows', 'download-desc-windows', windowsAsset);
-  setDownload('download-link-linux', 'download-desc-linux', linuxAsset);
-}
-
-// Sin asset dejamos el <a> sin href ni download: así el navegador no lo trata como
-// descarga y no se guarda la página actual.
-function setDownload(linkId, descId, asset) {
+// Sin asset dejamos el <a> sin href ni download y marcado como disabled.
+function setDownload(linkId, descId, asset, tag) {
   const link = document.getElementById(linkId);
   const desc = document.getElementById(descId);
   if (!link) return;
@@ -402,12 +443,16 @@ function setDownload(linkId, descId, asset) {
   if (!asset) {
     link.removeAttribute('href');
     link.removeAttribute('download');
+    link.classList.remove('active');
+    link.classList.add('disabled');
+    if (desc) desc.textContent = i18n[currentLang]?.dl_not_available || 'No disponible aún';
     return;
   }
 
+  link.classList.remove('disabled');
   link.href = asset.browser_download_url;
   link.setAttribute('download', asset.name.replace(/^ragnarok-/i, ''));
-  if (desc) desc.textContent = `${latestVersionTag} | ${formatBytes(asset.size)}`;
+  if (desc) desc.textContent = `${tag || latestVersionTag} | ${formatBytes(asset.size)}`;
 }
 
 function fallback() {
@@ -419,7 +464,7 @@ function fallback() {
     link.removeAttribute('download');
   });
   const desc = document.getElementById('download-desc-windows');
-  if (desc) desc.textContent = 'Haz clic para descargar';
+  if (desc) desc.textContent = currentLang === 'es' ? 'Haz clic para descargar' : 'Click to download';
   const textEl = document.getElementById('hero-badge-text');
   const badgeContainer = textEl?.closest('.version-badge');
   if (textEl && badgeContainer) {

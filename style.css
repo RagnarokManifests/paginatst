@@ -393,8 +393,13 @@ a { color: inherit; text-decoration: none; }
   background-color: var(--surface);
   color: var(--white);
 }
-.download-option:not(.active):hover {
+.download-option:not(.active):not(.disabled):hover {
   background-color: var(--surface-h);
+}
+.download-option.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 .download-option-title {
   font-weight: 600;

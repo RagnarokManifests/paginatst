@@ -3,6 +3,8 @@ import { writeFileSync } from 'node:fs';
 const REPO = 'RagnarokManifests/games';
 const TOKEN = process.env.GITHUB_TOKEN;
 const EXE_REGEX = /\.exe$/i;
+const APPIMAGE_REGEX = /\.AppImage$/i;
+const ZIP_REGEX = /\.zip$/i;
 
 const headers = {
   Accept: 'application/vnd.github+json',
@@ -20,20 +22,20 @@ const [latest, all] = await Promise.all([
   fetchJson(`https://api.github.com/repos/${REPO}/releases?per_page=100`),
 ]);
 
-const hasExe = (release) => release.assets?.some((a) => EXE_REGEX.test(a.name));
+const hasInstaller = (release) => release.assets?.some((a) => EXE_REGEX.test(a.name) || APPIMAGE_REGEX.test(a.name) || ZIP_REGEX.test(a.name));
 
-const valid = all.filter(hasExe);
+const valid = all.filter(hasInstaller);
 
 const latestIndex = valid.findIndex((r) => r.id === latest.id);
 if (latestIndex > 0) {
   valid.splice(latestIndex, 1);
   valid.unshift(latest);
-} else if (latestIndex === -1 && hasExe(latest)) {
+} else if (latestIndex === -1 && hasInstaller(latest)) {
   valid.unshift(latest);
 }
 
 if (!valid.length) {
-  throw new Error('No se encontró ningún release con un asset .exe');
+  throw new Error('No se encontró ningún release con un instalador');
 }
 
 writeFileSync('releases.json', JSON.stringify(valid, null, 2) + '\n');
