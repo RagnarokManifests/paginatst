@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 10937852,
         "digest": "sha256:0ce7605ee07693ff84f56fa6bd5cf5bf9fd47fe94fa4af0e274efb39c09426c8",
-        "download_count": 288,
+        "download_count": 305,
         "created_at": "2026-09-22T20:55:53Z",
         "updated_at": "2026-09-22T20:55:55Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.2.4/ragnarok-launcher_2.2.4_x64-setup.exe"
@@ -626,7 +626,7 @@
         "state": "uploaded",
         "size": 87923192,
         "digest": "sha256:c39e357ed4d6b40de21e4baaffa3629366f0963fde2320001f9a9516d03505fc",
-        "download_count": 47,
+        "download_count": 48,
         "created_at": "2026-09-05T21:50:40Z",
         "updated_at": "2026-09-05T21:51:30Z",
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.1.7/ragnarok-launcher_2.1.7_amd64.AppImage"
