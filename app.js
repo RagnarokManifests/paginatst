@@ -4,7 +4,30 @@ const RELEASES_API_URL = 'https://api.github.com/repos/RagnarokManifests/games/r
 const LATEST_RELEASE_API_URL = 'https://api.github.com/repos/RagnarokManifests/games/releases/latest';
 const EXE_REGEX  = /\.exe$/i;
 const ZIP_REGEX  = /\.zip$/i;
-const APPIMAGE_REGEX = /\.AppImage$/i;
+
+// Hasta la v2.3.6 el instalador llevaba el plugin de Steam dentro y Google Safe
+// Browsing lo marcaba, así que Chrome bloqueaba el .exe: se ofrecía el .zip
+// espejo. Desde la v2.3.7 el plugin se descarga aparte y el .exe sale limpio,
+// así que se descarga directo.
+const EXE_DIRECT_FROM = [2, 3, 7];
+
+function versionParts(tag) {
+  return String(tag || '').replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+}
+
+function isAtLeast(tag, min) {
+  const v = versionParts(tag);
+  for (let i = 0; i < min.length; i++) {
+    if ((v[i] || 0) !== min[i]) return (v[i] || 0) > min[i];
+  }
+  return true;
+}
+
+function pickWindowsAsset(release) {
+  const exe = release.assets?.find(a => EXE_REGEX.test(a.name));
+  const zip = release.assets?.find(a => ZIP_REGEX.test(a.name));
+  return isAtLeast(release.tag_name, EXE_DIRECT_FROM) ? (exe || zip) : (zip || exe);
+}
 
 const i18n = {
   es: {
@@ -26,7 +49,7 @@ const i18n = {
     dl_not_available: "No disponible aún",
     dl_fetching: "Obteniendo enlace...",
     dl_error: "Error. Reintenta.",
-    footer_copy: "© 2026 Ragnarok Launcher. Todos los derechos reservados.",
+    footer_copy: "© 2026 Ragnarok Launcher.",
     gallery_tag: "Interfaz",
     gallery_title: "Explora el Launcher",
     gallery_desc: "Echa un vistazo a la interfaz limpia, rápida y configurable de Ragnarok Launcher.",
@@ -56,7 +79,7 @@ const i18n = {
     dl_not_available: "Not available yet",
     dl_fetching: "Fetching link...",
     dl_error: "Error. Retry.",
-    footer_copy: "© 2026 Ragnarok Launcher. All rights reserved.",
+    footer_copy: "© 2026 Ragnarok Launcher.",
     gallery_tag: "Interface",
     gallery_title: "Explore the Launcher",
     gallery_desc: "Take a look at the clean, fast, and customizable interface of Ragnarok Launcher.",
@@ -69,7 +92,8 @@ const i18n = {
   }
 };
 
-let currentLang = localStorage.getItem('lang') || 'en';
+// Español salvo que el navegador esté en otro idioma y el visitante no haya elegido.
+let currentLang = localStorage.getItem('lang') || (/^es/i.test(navigator.language || 'es') ? 'es' : 'en');
 let latestVersionTag = '';
 let currentReleasesData = [];
 
@@ -308,7 +332,6 @@ function formatDate(iso) {
   }
 
   attachLazyDownload('download-link-windows', 'download-desc-windows');
-  attachLazyDownload('download-link-linux', 'download-desc-linux');
 })();
 
 window.addEventListener('scroll', () => {
@@ -349,7 +372,7 @@ async function loadReleases() {
 
 // releases.json lo regenera un workflow, así que puede ir unos minutos atrás del
 // release real. Consultamos los últimos releases a la API de GitHub para reflejar
-// cualquier versión nueva inmediatamente (tanto en Windows como en Linux).
+// cualquier versión nueva inmediatamente.
 async function checkLiveLatest(valid) {
   try {
     const res = await fetch(RELEASES_API_URL, { cache: 'no-store' });
@@ -401,7 +424,7 @@ function applyReleaseData(valid) {
   let windowsAsset = null;
   let windowsTag = '';
   for (const r of valid) {
-    const asset = r.assets?.find(a => ZIP_REGEX.test(a.name)) || r.assets?.find(a => EXE_REGEX.test(a.name));
+    const asset = pickWindowsAsset(r);
     if (asset) {
       windowsAsset = asset;
       windowsTag = r.tag_name;
@@ -409,20 +432,7 @@ function applyReleaseData(valid) {
     }
   }
 
-  // Buscar el instalador más reciente para Linux recorriendo las versiones disponibles
-  let linuxAsset = null;
-  let linuxTag = '';
-  for (const r of valid) {
-    const asset = r.assets?.find(a => APPIMAGE_REGEX.test(a.name));
-    if (asset) {
-      linuxAsset = asset;
-      linuxTag = r.tag_name;
-      break;
-    }
-  }
-
   setDownload('download-link-windows', 'download-desc-windows', windowsAsset, windowsTag);
-  setDownload('download-link-linux', 'download-desc-linux', linuxAsset, linuxTag);
 }
 
 function renderHero() {
@@ -457,7 +467,7 @@ function setDownload(linkId, descId, asset, tag) {
 
 function fallback() {
   // Sin href el <a> es inerte; el interceptor de clic reintenta al vuelo.
-  ['download-link-windows', 'download-link-linux'].forEach(id => {
+  ['download-link-windows'].forEach(id => {
     const link = document.getElementById(id);
     if (!link) return;
     link.removeAttribute('href');
