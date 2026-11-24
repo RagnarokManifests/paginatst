@@ -1,5 +1,38 @@
 [
   {
+    "id": 456219267,
+    "tag_name": "v2.4.7",
+    "name": "v2.4.7",
+    "published_at": "2026-11-24T02:03:42Z",
+    "html_url": "https://github.com/RagnarokManifests/games/releases/tag/v2.4.7",
+    "assets": [
+      {
+        "name": "rgk_2.4.7_x64-setup.exe",
+        "size": 18111856,
+        "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.4.7/rgk_2.4.7_x64-setup.exe"
+      },
+      {
+        "name": "rgk_2.4.7_x64-setup.zip",
+        "size": 18096291,
+        "browser_download_url": "https://github.com/RagnarokManifests/paginatst/releases/download/zip-v2.4.7/rgk_2.4.7_x64-setup.zip"
+      }
+    ]
+  },
+  {
+    "id": 456194145,
+    "tag_name": "v2.4.6",
+    "name": "v2.4.6",
+    "published_at": "2026-11-24T01:21:21Z",
+    "html_url": "https://github.com/RagnarokManifests/games/releases/tag/v2.4.6",
+    "assets": [
+      {
+        "name": "rgk_2.4.6_x64-setup.exe",
+        "size": 18108915,
+        "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.4.6/rgk_2.4.6_x64-setup.exe"
+      }
+    ]
+  },
+  {
     "id": 450962637,
     "tag_name": "v2.4.5",
     "name": "v2.4.5",
@@ -10,11 +43,6 @@
         "name": "rgk_2.4.5_x64-setup.exe",
         "size": 16330949,
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.4.5/rgk_2.4.5_x64-setup.exe"
-      },
-      {
-        "name": "rgk_2.4.5_x64-setup.zip",
-        "size": 16315085,
-        "browser_download_url": "https://github.com/RagnarokManifests/paginatst/releases/download/zip-v2.4.5/rgk_2.4.5_x64-setup.zip"
       }
     ]
   },
@@ -43,34 +71,6 @@
         "name": "rgk_2.4.3_x64-setup.exe",
         "size": 14169341,
         "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.4.3/rgk_2.4.3_x64-setup.exe"
-      }
-    ]
-  },
-  {
-    "id": 444852668,
-    "tag_name": "v2.4.2",
-    "name": "v2.4.2",
-    "published_at": "2026-11-13T23:45:05Z",
-    "html_url": "https://github.com/RagnarokManifests/games/releases/tag/v2.4.2",
-    "assets": [
-      {
-        "name": "rgk_2.4.2_x64-setup.exe",
-        "size": 15197203,
-        "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.4.2/rgk_2.4.2_x64-setup.exe"
-      }
-    ]
-  },
-  {
-    "id": 444682804,
-    "tag_name": "v2.4.1",
-    "name": "v2.4.1",
-    "published_at": "2026-11-13T20:05:37Z",
-    "html_url": "https://github.com/RagnarokManifests/games/releases/tag/v2.4.1",
-    "assets": [
-      {
-        "name": "rgk_2.4.1_x64-setup.exe",
-        "size": 15184108,
-        "browser_download_url": "https://github.com/RagnarokManifests/games/releases/download/v2.4.1/rgk_2.4.1_x64-setup.exe"
       }
     ]
   }
